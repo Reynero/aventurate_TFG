@@ -1,0 +1,75 @@
+<% layout("layouts/boilerplate") %><!--this works as if you were using Reactjs, everything here loads up in the boilerplate file-->
+    
+
+    <div class="row">
+        <h1 class="text-center">Update Route</h1>
+        <div class="col-6 offset-3">
+            <!--HEEY, look carefully, here you are sending the post request to '/campgrounds'-->
+            <!--enctype="multipart/form-data" is used to upload images, dont forget-->
+    <form action="/campgrounds/<%= found._id %>?_method=PUT" method="post" class="validateForm" novalidate enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="title" class="from-label">Title</label>
+            <input type="text" id="title" name="campground[title]" class="form-control" value="<%= found.title %>" required>
+            <div class="valid-feedback">Looks Good!</div>
+        </div>
+        <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" class="form-control" id="location" name="campground[location]" value="<%= found.location %>" required>
+            <div class="valid-feedback">Looks Good!</div>
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label">Add images</label>
+            <input type="file" id="image" name="image" multiple>
+            <div class="valid-feedback">Looks Good!</div>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">description</label>
+            <textarea type="text" class="form-control" id="description" name="campground[description]" required><%= found.description %></textarea>
+            <div class="valid-feedback">Looks Good!</div>
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label" value="<%= found.price %>">price</label>
+            <div class="input-group ">
+                <span for="price" class="input-group-text" id="price-label">$</span>
+                <input type="text" class="form-control" id="price" aria-describedby="price-label" name="campground[price]" required>
+                <div class="valid-feedback">Looks Good!</div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <% found.images.forEach((img, i)=>{ %>
+                <!--here btw you are calling the virtual 'thumbnail' instead of just calling the url property-->
+                <!--once again, dont pay too much attention to this, you could've done with css and call img.url as you would normally do-->
+                <img src="<%= img.thumbnail %>" class="img-thumbnail" alt="images">
+                <div class="form-check-inline">
+                    <input type="checkbox" name="deleteImages[]" id="image-<%= i %>" value="<%= img.filename %>">
+                </div>
+                <label for="image-<%= i %>">Delete?</label>
+            <% }) %>
+        </div>
+        <button class="btn btn-info">update route</button>
+    </form>
+    
+        </div>
+    </div>
+
+    <script>
+        (() => {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        const forms = document.querySelectorAll('.validateForm')//this name has to match the form class
+
+        // Loop over them and prevent submission
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+            }, false)
+        })
+        })()
+    </script>
+

@@ -1,0 +1,38 @@
+body{
+    box-sizing: border-box;
+    height: 100vh;
+    background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url("https://cdnp.flypgs.com/files/Ekstrem_Sporlar/camping-kampcilik-nedir.jpg");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    
+}
+main{
+    margin: auto;
+}
+.cover-container{
+    max-width:60vw;
+}
+
+.nav-link{
+    padding: 0.25rem 0;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.5);
+    margin-left: 1rem;
+    border-bottom: 0.25rem solid transparent;
+}
+.nav-link:hover{
+    color: rgba(255, 255, 255, 0.5);
+    border-bottom-color: rgba(255, 255, 255, 0.5);
+}
+.active{
+    color: white;
+    border-bottom-color: white;
+}
+footer{
+    height: 5rem;
+    display: flex;
+    align-self: center;
+    padding: 2rem;
+}

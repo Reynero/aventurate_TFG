@@ -1,0 +1,146 @@
+<% layout("layouts/boilerplate") %><!--this works as if you were using Reactjs, everything here loads up in the boilerplate file-->
+<link rel="stylesheet" href="/stylesheets/stars.css">  
+
+
+  <div class="row">
+        <div class="col-6">
+          
+          <div id="carouselExample" class="carousel slide">
+            <div class="carousel-inner">
+              
+                <% found.images.forEach((img, index)=>{ %><!--dont forget, for of is for arrays, for in is for objects-->
+                  <div class="carousel-item <%= index === 0 && "active" %>">
+                  <img src="<%= img.url %>" class="d-block w-100" alt="images">
+                  </div>
+                <% }) %>
+              
+            </div>
+            <% if(found.images.length > 1){ %>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            <% } %>
+          </div>
+            <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title"><%= found.title %></h4>
+                  <p class="card-text"><%= found.description %></p>
+                </div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item text-muted"><%= found.location %></li>
+                  <li class="list-group-item">Submitted by: <%= found.author.username %></li>
+                  <li class="list-group-item">$<%= found.price %>/person</li>
+                  
+                </ul>
+                <% if(currentUser && currentUser.equals(found.author._id)){ %>
+                  <div class="card-body">
+                    <button class="btn btn-warning"><a class="card-link" style="color: white; text-decoration: none;" href="/campgrounds/<%= found._id %>/edit">EDIT</a></button>
+                    <form  action="/campgrounds/<%= found._id %>?_method=DELETE" method="post">
+                        <button class="btn btn-danger">DELETE</button>
+                    </form>
+                    
+                </div>
+                <% } %>
+
+                
+                <% if(googleRatings === [null]){ %>
+                  <div class="card-body">
+                    <div class="card-header">
+                      Google Reviews!
+                    </div>
+                    <p class="card-text">No Reviews Yet!</p>
+                  </div>
+                <% }else{ %>
+                  <div class="card-body">
+                    <div class="card-header">Google Reviews  <p class="starability-result" data-rating="<%= scrapeReview %>">
+                      Rated: <%= scrapeReview %> stars
+                    </p></div>
+                    <% googleRatings.forEach(e => {%>
+                      <p class="card-text" style="padding: .5rem;">- <%= e %></p>
+                     <% });%>
+                  </div>
+                  
+                  
+                <% } %>
+                
+              </div>
+              
+        </div>
+
+        <div class="col-6">
+          <div id="map" style="width:100%; height: 300px;"></div>
+          
+            <% if(currentUser){%>
+              <h2>Leave a Review!</h2>
+              <form action="/campgrounds/<%= found._id %>/reviews" method="post" class="mb-3 validated-form" novalidate>
+                <!--<div class="mb-3">
+                    
+                    <fieldset class="starability-basic">
+                      <legend>First rating:</legend>
+                      <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+                      <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                      <label for="first-rate1" title="Terrible">1 star</label>
+                      <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                      <label for="first-rate2" title="Not good">2 stars</label>
+                      <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                      <label for="first-rate3" title="Average">3 stars</label>
+                      <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                      <label for="first-rate4" title="Very good">4 stars</label>
+                      <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                      <label for="first-rate5" title="Amazing">5 stars</label>
+                    </fieldset> 
+                    there's n need for this to show because the result is going to depend on the NPL model now, in other words it depends n what you write in the review
+                    
+                </div>-->
+                <div class="mb-3">
+                    <label class="form-label" for="body">Review</label>
+                    <textarea class="form-control" name="review[body]" id="body" cols="30" rows="4" required></textarea>
+                    <div class="valid-feedback">Looks Good!</div>
+                </div>
+                <button type="submit" class="btn btn-success">Submit</button>
+              </form>
+            <% } %>
+
+              <% for(let r of found.review){ %>
+              <div class="card mb-3">
+                <div class="card-body">
+                    <h3><%= r.author.username %></h3>
+                    <p class="starability-result" data-rating="<%= r.rating %>">
+                      Rated: <%= r.rating %> stars
+                    </p>
+                    <p class="card-text">Review: <%= r.body %></p>
+                    
+                    <% if(currentUser && currentUser.equals(found.author._id)){%>
+                    <!--btw found refers to the campground and review to the review itself-->
+                    <form action="/campgrounds/<%= found._id %>/reviews/<%= r._id %>?_method=DELETE" method="post">
+                        <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                    </form>
+                    <% } %>
+                  </div>
+              </div>
+              <% } %>
+        </div>
+    </div>
+
+    <footer>
+        <a href="/campgrounds">All Camps</a>
+       
+    </footer>
+
+    <script>
+      const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>';
+      const campground2 = <%- JSON.stringify(found) %>;
+      //dont pay attention if it shows red, vs code doesnt accept this sintax because it thins that ejs only works in html but you can actualy put it inside an script
+      //these variables will be handled in the file below
+    </script>
+    <script src="/js/showPageMap.js"></script>
+    
+
+    
+
+    

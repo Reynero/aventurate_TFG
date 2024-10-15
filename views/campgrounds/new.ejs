@@ -1,0 +1,66 @@
+<% layout("layouts/boilerplate") %><!--this works as if you were using Reactjs, everything here loads up in the boilerplate file-->
+
+    <div class="row">
+        <h1 class="text-center">New Route</h1>
+        <div class="col-6 offset-3">
+            <!--HEEY, look carefully, here you are sending the post request to '/campgrounds'-->
+            <!--enctype="multipart/form-data" is used to upload images, dont forget-->
+    <form action="/campgrounds" method="post" novalidate class="validateForm" enctype="multipart/form-data">
+        <!--BTW VERYYYYYY IMPOOOORTANT, TURNS OUT THAT THE ADDRESS YOU SET IN ACTION WILL BE ASSIGNED TO THE URL, IT ACTUALLY TAKES YOU TO IT-->
+        <div class="mb-3">
+            <label for="title" class="from-label">Title</label>
+            <!--another thing, if you send the name like that everything will be grouped under the name 'campground'-->
+            <!--its a new feature of HTML-->
+            <!--{"campground":{"title":"dfgdf","location":"gfdgfd"}}-->
+            <input type="text" id="title" name="campground[title]" class="form-control" required>
+            <div class="valid-feedback">Looks Good!</div>
+        </div>
+        <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" class="form-control" id="location" name="campground[location]" required>
+            <div class="valid-feedback">Looks Good!</div>
+        </div>
+        <div class="mb-3">
+            <label for="image">Add Images</label>
+            <input type="file" name="image" id="image" multiple>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">description</label>
+            <textarea type="text" class="form-control" id="description" name="campground[description]" required></textarea>
+            <div class="valid-feedback">Looks Good!</div>
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">price</label>
+            <div class="input-group ">
+                <span for="price" class="input-group-text" id="price-label">$/person</span>
+                <input type="number" class="form-control" id="price" aria-describedby="price-label" name="campground[price]" required>
+                <div class="valid-feedback">Looks Good!</div>
+            </div>
+        </div>
+        
+        <button class="btn btn-success">add route</button>
+    </form>
+    
+        </div>
+    </div>
+
+    <script>
+        (() => {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        const forms = document.querySelectorAll('.validateForm')//this name has to match the form class
+
+        // Loop over them and prevent submission
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+            }, false)
+        })
+        })()
+    </script>
