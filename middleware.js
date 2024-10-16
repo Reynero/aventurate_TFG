@@ -66,7 +66,7 @@ module.exports.sentiAnalysis = async (reviews) => {
 
 module.exports.scrape = async (url)=>{
     const browser = await puppeteer.launch({
-        executablePath: await puppeteer.executablePath(),    
+          
         headless: "new"//this config makes sure to do everything as a background process
     });
     const googleFormatUrl = url.split(' ').join('+');//you need to replace all the spaces with a +
